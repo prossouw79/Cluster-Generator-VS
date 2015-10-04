@@ -95,20 +95,28 @@ namespace CDT
 
         private void generateAllPossibleRacks()
         {
-            Parallel.ForEach(nodesInRack, s =>
+            try
             {
-                foreach (int numc in cpusInNode) foreach (int numm in memsInNode)foreach (int numg in gpusInNode)
-                foreach (cpu cp in theCPUS) foreach (mem me in theMems)foreach (gpu gp in theGPUS)
+                Parallel.ForEach(nodesInRack, s =>
                 {
-                    rack tmpRack = new rack(s, new node(numc, numm, numg, cp, gp, me));
-                    allPossibleRacks.Add(tmpRack);}
+                    foreach (int numc in cpusInNode) foreach (int numm in memsInNode) foreach (int numg in gpusInNode)
+                                foreach (cpu cp in theCPUS) foreach (mem me in theMems) foreach (gpu gp in theGPUS)
+                                        {
+                                            rack tmpRack = new rack(s, new node(numc, numm, numg, cp, gp, me));
+                                            allPossibleRacks.Add(tmpRack);
+                                        }
                 });
 
-            txt_log.BeginInvoke((Action)(() =>
+                txt_log.BeginInvoke((Action)(() =>
+                {
+                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + "Possible Rack Configurations:\t" + allPossibleRacks.Count);
+                }));
+                readyToGenerateClusters = true;
+            }
+            catch(Exception ex)
             {
-                txt_log.AppendText(Environment.NewLine + Environment.NewLine + "Possible Rack Configurations:\t" + allPossibleRacks.Count);
-            }));
-            readyToGenerateClusters = true;
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private double calculateMonthlyCost(cluster clust)
@@ -456,6 +464,7 @@ namespace CDT
                     if (!s.StartsWith("#"))
                     {
                         //#componentName:componentCost:componentTDP:vramGB,sfpTFLOPS,dfpTFLOPS
+                        //gpu1:117,65:200,00:2,00:2,00:1,18
                         string[] partsG = s.Split(':');
 
                         String componentName = partsG[0];
@@ -469,6 +478,17 @@ namespace CDT
                         theGPUS.Add(tmp);
                     }
                 }
+
+                string msg = "";
+
+                foreach (cpu c in theCPUS)
+                    msg += c.toString();
+                foreach (gpu g in theGPUS)
+                    msg += g.toString();
+                foreach (mem m in theMems)
+                    msg += m.toString();
+
+                MessageBox.Show(msg);
 
                 txt_log.BeginInvoke((Action)(() =>
                                     {
