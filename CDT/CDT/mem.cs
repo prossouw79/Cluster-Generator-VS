@@ -7,6 +7,12 @@ namespace ClusterDesignTool
 		private int capacityGB;
 		private int frequencyMhz;
 
+        public mem() : base("noname",0,0)
+        {
+            this.capacityGB = 0;
+            this.frequencyMhz = 0;
+        }
+
 		public mem(int capacityGB, int frequencyMhz, String componentName, Double componentCost, Double componentTDP) : base (componentName,componentCost,componentTDP) {
 			this.capacityGB = capacityGB;
 			this.frequencyMhz = frequencyMhz;

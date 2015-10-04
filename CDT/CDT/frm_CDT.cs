@@ -110,13 +110,151 @@ namespace CDT
                 txt_log.BeginInvoke((Action)(() =>
                 {
                     txt_log.AppendText(Environment.NewLine + Environment.NewLine + "Possible Rack Configurations:\t" + allPossibleRacks.Count);
+                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + getBestComponents());
                 }));
                 readyToGenerateClusters = true;
+
+
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+
+        }
+
+        private string getBestComponents()
+        {
+            string msg = "-----------Best Performing Components:-----------" + Environment.NewLine;
+            double fastestCPUd = 0; cpu fastestcpu = new cpu();
+            double fastestGPUd = 0; gpu fastestgpu = new gpu();
+            double fastestMemoryd = 0; mem fastestmem = new mem();
+
+            foreach (cpu c in theCPUS)
+            {
+                if (c.calculateGFLOPS() > fastestCPUd)
+                {
+                    fastestCPUd = c.calculateGFLOPS();
+                    fastestcpu = c;
+                }
+            }
+
+            foreach (gpu g in theGPUS)
+            {
+                if (g.getDpTFLOPS() > fastestGPUd)
+                {
+                    fastestGPUd = g.getDpTFLOPS();
+                    fastestgpu = g;
+                }
+            }
+
+            foreach (mem m in theMems)
+            {
+                double measure = m.getCapacityGB() * m.getFrequencyMhz();
+
+                if (measure > fastestMemoryd)
+                {
+                    fastestMemoryd = measure;
+                    fastestmem = m;
+                }
+            }
+
+            msg += Environment.NewLine + "CPU:\t" + fastestcpu.toString()+ Environment.NewLine;
+            msg += Environment.NewLine + "GPU:\t" + fastestgpu.toString() + Environment.NewLine;
+            msg += Environment.NewLine + "MEM:\t" + fastestmem.toString() + Environment.NewLine;
+
+
+            msg += Environment.NewLine + "-----------Most Cost Effective Components:-----------" + Environment.NewLine;
+
+
+            double costEffectiveCPUd = 0; cpu costEffectivecpu = new cpu();
+            double costEffectiveGPUd = 0; gpu costEffectivegpu = new gpu();
+            double costEffectiveMemoryd = 0; mem costEffectivemem = new mem();
+
+            foreach (cpu c in theCPUS)
+            {
+                double measure = c.calculateGFLOPS()/c.getComponentCost();
+
+                if (measure > costEffectiveCPUd)
+                {
+                    costEffectiveCPUd = measure;
+                    costEffectivecpu = c;
+                }
+            }
+
+            foreach (gpu g in theGPUS)
+            {
+                double measure = g.getSpTFLOPS()/ g.getComponentCost();
+
+                if (measure > costEffectiveGPUd)
+                {
+                    costEffectiveGPUd = measure;
+                    costEffectivegpu = g;
+                }
+            }
+
+            foreach (mem m in theMems)
+            {
+                double measure = (m.getCapacityGB() * m.getFrequencyMhz())/m.getComponentCost();
+
+                if (measure > costEffectiveMemoryd)
+                {
+                    costEffectiveMemoryd = measure;
+                    costEffectivemem = m;
+                }
+            }
+
+            msg += Environment.NewLine + "CPU:\t" + costEffectivecpu.toString() + Environment.NewLine;
+            msg += Environment.NewLine + "GPU:\t" + costEffectivegpu.toString() + Environment.NewLine;
+            msg += Environment.NewLine + "MEM:\t" + costEffectivemem.toString() + Environment.NewLine;
+
+
+            msg += Environment.NewLine + "-----------Most Power Efficient Components:-----------" + Environment.NewLine;
+
+
+            double powerEfficientCPUd = 0; cpu powerEfficientcpu = new cpu();
+            double powerEfficientGPUd = 0; gpu powerEfficientgpu = new gpu();
+            double powerEfficientMemoryd = 0; mem powerEfficientmem = new mem();
+
+            foreach (cpu c in theCPUS)
+            {
+                double measure = c.calculateGFLOPS() / c.getComponentTDP();
+
+                if (measure > powerEfficientCPUd)
+                {
+                    powerEfficientCPUd = measure;
+                    powerEfficientcpu = c;
+                }
+            }
+
+            foreach (gpu g in theGPUS)
+            {
+                double measure = g.getSpTFLOPS() / g.getComponentTDP();
+
+                if (measure > powerEfficientGPUd)
+                {
+                    powerEfficientGPUd = measure;
+                    powerEfficientgpu = g;
+                }
+            }
+
+            foreach (mem m in theMems)
+            {
+                double measure = (m.getCapacityGB() * m.getFrequencyMhz()) / m.getComponentTDP();
+
+                if (measure > powerEfficientMemoryd)
+                {
+                    powerEfficientMemoryd = measure;
+                    powerEfficientmem = m;
+                }
+            }
+
+            msg += Environment.NewLine + "CPU:\t" + powerEfficientcpu.toString() + Environment.NewLine;
+            msg += Environment.NewLine + "GPU:\t" + powerEfficientgpu.toString() + Environment.NewLine;
+            msg += Environment.NewLine + "MEM:\t" + powerEfficientmem.toString() + Environment.NewLine;
+
+
+            return msg;
         }
 
         private double calculateMonthlyCost(cluster clust)
@@ -145,80 +283,108 @@ namespace CDT
             cluster bestCluster;
             doneGeneratingCluster = false;
             readyToGenerateClusters = false;
+            int zeroResultCount = 0;
+            bool ended = false;
 
             int step = (int)(prg_1.Maximum / (int)max_racks) - 1;
 
             int clustersSoFar = 0;
 
             for (int k = (int)max_racks; k >= 1; k--)
-           {
-                Parallel.ForEach(allPossibleRacks, currentRack =>
+            {
+                if (zeroResultCount < 3)
                 {
-                    cluster tmpCluster = new cluster(k, currentRack);
-
-                    if (
-                        //performance needs
-                        cpu_gflops >= tmpCluster.getClusterCPUGFLOPS() ||
-                        gpu_sp_tflops >= tmpCluster.getClusterGPUTFLOPS_sp() ||
-                        gpu_dp_gflops >= tmpCluster.getClusterGPUTFLOPS_dp() ||
-                        min_ram >= tmpCluster.getClusterRAM() ||
-                        min_vram >= tmpCluster.getClusterVRAM() ||
-
-                        //budget constraint
-                        monthly_power_budget <= calculateMonthlyCost(tmpCluster) ||
-                        total_budget <= calculateInitialClusterCost(tmpCluster) ||
-
-                        //power constraints
-                        max_cluster_power <= tmpCluster.getClusterTDP() ||
-                        max_rack_power <= tmpCluster.getRackUsed().getRackTDP() ||
-                        
-                        // memory per Core rule
-                        tmpCluster.getRAMperCore() < min_ram_per_core)
+                    Parallel.ForEach(allPossibleRacks, currentRack =>
                     {
-                        //exclude cluster
-                    }
-                    else //include cluster
-                        viableClusters.Add(tmpCluster);
-                });
-                prg_1.Value = Math.Abs(prg_1.Maximum - (k * step));
-                txt_log.AppendText(Environment.NewLine +  "Viable Clusters of size " + k + ":\t" + (viableClusters.Count - clustersSoFar));
-                clustersSoFar = viableClusters.Count;
-            }
-            prg_1.Value = prg_1.Maximum;
-            if (viableClusters.Count == 1)
-            {
-                bestCluster = viableClusters.ElementAt(0);
-            }
-            else if (viableClusters.Count > 1)
-            {
-                txt_log.AppendText(Environment.NewLine + "Multiple(" + viableClusters.Count + ") viable solutions have been found, to get the best one for your needs we need to identify your priorities." +
-                                "Select your primary and secondary priorities from the lists that follow. Press OK to Continue.");
-                setPriorities();
 
-                ConcurrentBag<cluster> tmpList = binaryFilter(viableClusters, p1);
+                        cluster tmpCluster = new cluster(k, currentRack);
 
-                int cnt = 0;
-                while (tmpList.Count > 1)
+                        if (
+                            //performance needs
+                            cpu_gflops >= tmpCluster.getClusterCPUGFLOPS() ||
+                            gpu_sp_tflops >= tmpCluster.getClusterGPUTFLOPS_sp() ||
+                            gpu_dp_gflops >= tmpCluster.getClusterGPUTFLOPS_dp() ||
+                            min_ram >= tmpCluster.getClusterRAM() ||
+                            min_vram >= tmpCluster.getClusterVRAM() ||
+
+                            //budget constraint
+                            monthly_power_budget <= calculateMonthlyCost(tmpCluster) ||
+                            total_budget <= calculateInitialClusterCost(tmpCluster) ||
+
+                            //power constraints
+                            max_cluster_power <= tmpCluster.getClusterTDP() ||
+                            max_rack_power <= tmpCluster.getRackUsed().getRackTDP() ||
+
+                            // memory per Core rule
+                            tmpCluster.getRAMperCore() < min_ram_per_core)
+                        {
+                            //exclude cluster
+                        }
+                        else //include cluster
+                            viableClusters.Add(tmpCluster);
+
+
+                    });
+                }
+                else
                 {
-                    tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                    tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                    tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                    
-                    tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                    tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                    ended = true;
+                }
+                    prg_1.Value = Math.Abs(prg_1.Maximum - (k * step));
+                    int clustersOfThisSize = viableClusters.Count - clustersSoFar;
 
-                    tmpList = binaryFilter(tmpList, p3); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                    if (clustersOfThisSize == 0)
+                        zeroResultCount++;
+                    else
+                        zeroResultCount = 0;
+
+                    txt_log.AppendText(Environment.NewLine + "Viable Clusters of size " + k + ":\t" + clustersOfThisSize);
+                    clustersSoFar = viableClusters.Count;
+                }
+                prg_1.Value = prg_1.Maximum;
+                if (viableClusters.Count == 1)
+                {
+                    bestCluster = viableClusters.ElementAt(0);
+                }
+                else if (viableClusters.Count > 1)
+                {
+                    txt_log.AppendText(Environment.NewLine + "Multiple(" + viableClusters.Count + ") viable solutions have been found, to get the best one for your needs we need to identify your priorities." +
+                                    "Select your primary and secondary priorities from the lists that follow. Press OK to Continue.");
+                    setPriorities();
+
+                    ConcurrentBag<cluster> tmpList = binaryFilter(viableClusters, p1);
+
+                    int cnt = 0;
+                    while (tmpList.Count > 1)
+                    {
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+
+                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+
+                        tmpList = binaryFilter(tmpList, p3); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                    }
+
+                    bestCluster = tmpList.ElementAt(0);
+                    txt_log.Text = bestCluster.getDetails();
+
+                }
+                else
+                {
+                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.");
+                }
+                readyToGenerateClusters = true;
+
+                if (ended)
+                {
+                    txt_log.Clear();
+                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + "No viable clusters were found within 3 size configurations in a row, so the generation process was halted. Adjust needs/constraints.");
+                
                 }
 
-                bestCluster = tmpList.ElementAt(0);
-                txt_log.Text = bestCluster.getDetails();
-
-            }
-            else
-            {
-                txt_log.AppendText(Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.");
-            }
-            readyToGenerateClusters = true;
+            
         }
 
         private ConcurrentBag<cluster> binaryFilter(ConcurrentBag<cluster> listIn, char mode)
@@ -479,7 +645,7 @@ namespace CDT
                     }
                 }
 
-                string msg = "";
+               /* string msg = "";
 
                 foreach (cpu c in theCPUS)
                     msg += c.toString();
@@ -488,7 +654,7 @@ namespace CDT
                 foreach (mem m in theMems)
                     msg += m.toString();
 
-                MessageBox.Show(msg);
+                MessageBox.Show(msg);*/
 
                 txt_log.BeginInvoke((Action)(() =>
                                     {

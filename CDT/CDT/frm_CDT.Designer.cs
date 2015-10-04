@@ -309,7 +309,7 @@
             this.txt_min_gpu_tflops_sp.Name = "txt_min_gpu_tflops_sp";
             this.txt_min_gpu_tflops_sp.Size = new System.Drawing.Size(218, 26);
             this.txt_min_gpu_tflops_sp.TabIndex = 6;
-            this.txt_min_gpu_tflops_sp.Text = "10";
+            this.txt_min_gpu_tflops_sp.Text = "8";
             // 
             // txt_min_gpu_tflops_dp
             // 
@@ -320,7 +320,7 @@
             this.txt_min_gpu_tflops_dp.Name = "txt_min_gpu_tflops_dp";
             this.txt_min_gpu_tflops_dp.Size = new System.Drawing.Size(218, 26);
             this.txt_min_gpu_tflops_dp.TabIndex = 7;
-            this.txt_min_gpu_tflops_dp.Text = "5";
+            this.txt_min_gpu_tflops_dp.Text = "4";
             // 
             // txt_min_ram
             // 
@@ -331,7 +331,7 @@
             this.txt_min_ram.Name = "txt_min_ram";
             this.txt_min_ram.Size = new System.Drawing.Size(218, 26);
             this.txt_min_ram.TabIndex = 8;
-            this.txt_min_ram.Text = "1024";
+            this.txt_min_ram.Text = "128";
             // 
             // txt_min_vram
             // 
@@ -342,7 +342,7 @@
             this.txt_min_vram.Name = "txt_min_vram";
             this.txt_min_vram.Size = new System.Drawing.Size(218, 26);
             this.txt_min_vram.TabIndex = 9;
-            this.txt_min_vram.Text = "128";
+            this.txt_min_vram.Text = "32";
             // 
             // txt_min_cpu_gflops
             // 
@@ -353,7 +353,7 @@
             this.txt_min_cpu_gflops.Name = "txt_min_cpu_gflops";
             this.txt_min_cpu_gflops.Size = new System.Drawing.Size(218, 26);
             this.txt_min_cpu_gflops.TabIndex = 5;
-            this.txt_min_cpu_gflops.Text = "1000";
+            this.txt_min_cpu_gflops.Text = "256";
             // 
             // label20
             // 
@@ -397,13 +397,13 @@
             this.tableLayoutPanel2.Controls.Add(this.label12, 0, 5);
             this.tableLayoutPanel2.Controls.Add(this.txt_total_budget, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.txt_monthly_power_budget, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.txt_max_power_delivery, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.txt_max_rack_power, 1, 5);
             this.tableLayoutPanel2.Controls.Add(this.txt_max_racks, 1, 7);
             this.tableLayoutPanel2.Controls.Add(this.label14, 0, 7);
             this.tableLayoutPanel2.Controls.Add(this.label10, 1, 3);
             this.tableLayoutPanel2.Controls.Add(this.label7, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label13, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.txt_max_power_delivery, 1, 4);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 6);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 10;
@@ -463,9 +463,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_total_budget.Location = new System.Drawing.Point(260, 23);
             this.txt_total_budget.Name = "txt_total_budget";
-            this.txt_total_budget.Size = new System.Drawing.Size(280, 26);
+            this.txt_total_budget.Size = new System.Drawing.Size(263, 26);
             this.txt_total_budget.TabIndex = 7;
-            this.txt_total_budget.Text = "1000000";
+            this.txt_total_budget.Text = "100000";
             // 
             // txt_monthly_power_budget
             // 
@@ -474,9 +474,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_monthly_power_budget.Location = new System.Drawing.Point(260, 55);
             this.txt_monthly_power_budget.Name = "txt_monthly_power_budget";
-            this.txt_monthly_power_budget.Size = new System.Drawing.Size(280, 26);
+            this.txt_monthly_power_budget.Size = new System.Drawing.Size(263, 26);
             this.txt_monthly_power_budget.TabIndex = 8;
-            this.txt_monthly_power_budget.Text = "20000";
+            this.txt_monthly_power_budget.Text = "2000";
             // 
             // txt_max_power_delivery
             // 
@@ -485,9 +485,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_max_power_delivery.Location = new System.Drawing.Point(260, 107);
             this.txt_max_power_delivery.Name = "txt_max_power_delivery";
-            this.txt_max_power_delivery.Size = new System.Drawing.Size(280, 26);
+            this.txt_max_power_delivery.Size = new System.Drawing.Size(263, 26);
             this.txt_max_power_delivery.TabIndex = 9;
-            this.txt_max_power_delivery.Text = "1000000";
+            this.txt_max_power_delivery.Text = "10000";
             // 
             // txt_max_rack_power
             // 
@@ -496,9 +496,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_max_rack_power.Location = new System.Drawing.Point(260, 139);
             this.txt_max_rack_power.Name = "txt_max_rack_power";
-            this.txt_max_rack_power.Size = new System.Drawing.Size(280, 26);
+            this.txt_max_rack_power.Size = new System.Drawing.Size(263, 26);
             this.txt_max_rack_power.TabIndex = 10;
-            this.txt_max_rack_power.Text = "200000";
+            this.txt_max_rack_power.Text = "2500";
             // 
             // txt_max_racks
             // 
@@ -507,7 +507,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_max_racks.Location = new System.Drawing.Point(260, 191);
             this.txt_max_racks.Name = "txt_max_racks";
-            this.txt_max_racks.Size = new System.Drawing.Size(280, 26);
+            this.txt_max_racks.Size = new System.Drawing.Size(263, 26);
             this.txt_max_racks.TabIndex = 12;
             this.txt_max_racks.Text = "5";
             // 
@@ -528,7 +528,7 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(260, 84);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(280, 20);
+            this.label10.Size = new System.Drawing.Size(263, 20);
             this.label10.TabIndex = 3;
             this.label10.Text = "Power Constraints";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -541,7 +541,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(260, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(280, 20);
+            this.label7.Size = new System.Drawing.Size(263, 20);
             this.label7.TabIndex = 0;
             this.label7.Text = "Budget Constraints";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -554,7 +554,7 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(260, 168);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(280, 20);
+            this.label13.Size = new System.Drawing.Size(263, 20);
             this.label13.TabIndex = 6;
             this.label13.Text = "Space Constraint";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

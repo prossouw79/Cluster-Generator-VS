@@ -8,6 +8,13 @@ namespace ClusterDesignTool
 		int instructionsPerCycle;
 		int numOfCores;
 
+        public cpu() : base("noname",0,0)
+        {
+            this.frequencyMhz = 0;
+            this.instructionsPerCycle = 0;
+            this.numOfCores = 0;
+        }
+
 		public cpu(int frequencyMhz, int instructionsPerCycle, int numOfCores, String componentName, Double componentCost, Double componentTDP) : base (componentName, componentCost, componentTDP)
 		{
 			this.frequencyMhz = frequencyMhz;

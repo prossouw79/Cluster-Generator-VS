@@ -134,18 +134,18 @@ namespace ClusterDesignTool
 
             if (clustertdp > 0 && clustertdp < 1000)//print in W
             {
-                msg += Environment.NewLine + "TOTAL POWER DRAW:\t\t" + clustertdp+ "\t W";
+                msg += Environment.NewLine + "CLUSTER POWER DRAW:\t\t" + clustertdp+ "\t W";
                 msg += Environment.NewLine + "RACK POWER DRAW:\t\t" + racktdp + "\t W";
             }
             else 
             if(clustertdp > 1000 && clustertdp < 1000000)//print in KW
             {
-                msg += Environment.NewLine + "TOTAL POWER DRAW:\t\t" + clustertdp / 1000 + "\t KW";
+                msg += Environment.NewLine + "CLUSTER POWER DRAW:\t\t" + clustertdp / 1000 + "\t KW";
                 msg += Environment.NewLine + "RACK POWER DRAW:\t\t" + racktdp / 1000 + "\t KW";
             }
             else //print in GW
             {
-                msg += Environment.NewLine + "TOTAL POWER DRAW:\t\t" + clustertdp / 1000000 + "\t GW";
+                msg += Environment.NewLine + "CLUSTER POWER DRAW:\t\t" + clustertdp / 1000000 + "\t GW";
                 msg += Environment.NewLine + "RACK POWER DRAW:\t\t" + racktdp / 1000000 + "\t GW";
             }
 

@@ -108,7 +108,7 @@ namespace ClusterDesignTool
 
 		public string toString()
 		{
-			return getNumOfNodes () + " Nodes per Rack ; Node Specifications:" + Environment.NewLine + getNodeUsed ().toString ();
+			return getNumOfNodes () + " Nodes per Rack ;" +Environment.NewLine+"Node Specifications:" + Environment.NewLine + getNodeUsed ().toString ();
 		}
 	}
 }
