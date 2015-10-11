@@ -61,24 +61,18 @@ namespace CDT.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:frequencyMhz:instructionsPerCycle:numOfCores
-        ///cpu1:71,78:65:2333:4:2
-        ///cpu2:85,71:70:3000:4:2
-        ///cpu3:62,21:75:2333:8:2
-        ///cpu4:75,00:80:3000:8:2
-        ///cpu5:125,46:85:2666:4:4
-        ///cpu6:142,22:90:3200:4:4
-        ///cpu7:126,32:95:3000:8:4
-        ///cpu8:180,00:100:4500:8:4
-        ///cpu9:228,57:105:3000:4:8
-        ///cpu10:327,27:110:4500:4:8
-        ///cpu11:185,46:115:2666:8:8
-        ///cpu12:177,73:120:2666:8:8
-        ///cpu13:384,00:125:3000:8:16
-        ///cpu14:492,31:130:4000:8:16
-        ///cpu15:379,26:135:3200:16:16
-        ///cpu16:388,57:140:3400:16:16
-        ///#.
+        ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:frequencyMhz:instructionsPerCycle:numOfCores:Hyperthreaded(Y/N)
+        ///Intel Core i3 4370:146:54:3800:16:2:N
+        ///Intel Core i3 4150:120:35:3500:16:2:N
+        ///Intel Core i5 4460:188:84:3200:16:4:N
+        ///Intel Core i5 4690:222:84:3500:16:4:N
+        ///Intel Core i7 4790:302:84:3600:16:8:Y
+        ///Intel Core i7 5960X:1045:140:3000:16:8:Y
+        ///Intel Xeon E5-2637 v2:1391:130:3500:8:8:Y
+        ///Intel Xeon E5-2690 v2:2669:130:3000:16:10:Y
+        ///AMD FX 8370:200:125:4000:8:8:N
+        ///AMD FX 9370:210:220:4400:8:8:N
+        ///AMD FX 9590:240: [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string cpus {
             get {
@@ -87,20 +81,16 @@ namespace CDT.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:vramGB,sfpTFLOPS,dfpTFLOPS
-        ///gpu1:117,65:200,00:2,00:2,00:1,18
-        ///gpu2:123,53:210,00:2,00:2,35:1,38
-        ///gpu3:129,41:220,00:2,00:2,70:1,59
-        ///gpu4:135,29:230,00:2,00:3,05:1,79
-        ///gpu5:141,18:240,00:4,00:3,40:2,00
-        ///gpu6:147,06:250,00:4,00:3,75:2,21
-        ///gpu7:152,94:260,00:4,00:4,10:2,41
-        ///gpu8:158,82:270,00:4,00:4,45:2,62
-        ///gpu9:164,71:280,00:8,00:4,80:2,82
-        ///gpu10:170,59:290,00:8,00:5,15:3,03
-        ///gpu11:176,47:300,00:8,00:5,50:3,24
-        ///gpu12:182,35:310,00:8,00:5,85:3,44
-        ///gpu13:188,24:320,00 [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:vramGB:sfpTFLOPS:dfpTFLOPS
+        ///Nvidia GTX 980 Ti:680:250:6:5.60:1.87
+        ///Nvidia Titan X:1030:250:12:6.10:2.04
+        ///AMD Fury X2:1850:375:8:17.10:5.72
+        ///AMD R9 295X2:1450:450:8:11.40:3.81
+        ///Nvidia Tesla K40:3200:245:12:4.29:1.43
+        ///Nvidia Tesla K80:4950:300:24:5.60:1.87
+        ///AMD FirePro S9050:1600:225:12:3.23:0.81
+        ///AMD FirePro S9150:3040:235:16:10.14:2.53
+        ///#.
         /// </summary>
         internal static string gpus {
             get {
@@ -120,22 +110,15 @@ namespace CDT.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:capacityGB:frequencyMhz
-        ///mem1:40:4:2:1333
-        ///mem2:50:4:2:1600
-        ///mem3:60:4:2:1866
-        ///mem4:70:4:2:2400
-        ///mem5:80:6:4:1333
-        ///mem6:90:6:4:1600
-        ///mem7:100:6:4:1866
-        ///mem8:110:6:4:2400
-        ///mem9:120:8:8:1333
-        ///mem10:130:8:8:1600
-        ///mem11:140:8:8:1866
-        ///mem12:150:8:8:2400
-        ///mem13:160:10:16:1333
-        ///mem14:170:10:16:1600
-        ///mem15:180:10:16:1866
-        ///mem16:190:10:16:2400
+        ///Kingston DDR3 Unbuffered SM:57:4:8:1600
+        ///Kingston DDR3 Unbuffered SM:116:5:16:1600
+        ///Kingston DDR3 Unbuffered SM:126:6:16:1866
+        ///Kingston DDR3 Unbuffered SM:346:8:32:1866
+        ///Crucial DDR3 ECC Registered SM:49:3:4:1866
+        ///Axiom DDR3 ECC Registered SM:119:4:8:1866
+        ///Hynix DDR3 ECC Registered SM:90:4:8:1866
+        ///Samsung DDR3 Unbuffered SM:360:6:32:1866
+        ///Nemix DDR3 ECC Registered SM:489:10:32:2133
         ///#.
         /// </summary>
         internal static string mems {

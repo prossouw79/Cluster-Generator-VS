@@ -28,11 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frm_CDT));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.prg_1 = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sampleInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noResultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lotsOfResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gb_log_rec = new System.Windows.Forms.GroupBox();
             this.txt_log = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -83,12 +90,6 @@
             this.txt_weekly_load_days = new System.Windows.Forms.TextBox();
             this.txt_electricity_cost = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.sampleInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.noResultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lotsOfResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_log_rec.SuspendLayout();
@@ -138,6 +139,18 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // saveOutputToolStripMenuItem
+            // 
+            this.saveOutputToolStripMenuItem.Name = "saveOutputToolStripMenuItem";
+            this.saveOutputToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.saveOutputToolStripMenuItem.Text = "Save Output";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -145,6 +158,37 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // sampleInputToolStripMenuItem
+            // 
+            this.sampleInputToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noResultToolStripMenuItem,
+            this.resultToolStripMenuItem,
+            this.lotsOfResultsToolStripMenuItem});
+            this.sampleInputToolStripMenuItem.Name = "sampleInputToolStripMenuItem";
+            this.sampleInputToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.sampleInputToolStripMenuItem.Text = "Sample Input";
+            // 
+            // noResultToolStripMenuItem
+            // 
+            this.noResultToolStripMenuItem.Name = "noResultToolStripMenuItem";
+            this.noResultToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.noResultToolStripMenuItem.Text = "No Result";
+            this.noResultToolStripMenuItem.Click += new System.EventHandler(this.noResultToolStripMenuItem_Click);
+            // 
+            // resultToolStripMenuItem
+            // 
+            this.resultToolStripMenuItem.Name = "resultToolStripMenuItem";
+            this.resultToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.resultToolStripMenuItem.Text = "1 Result";
+            this.resultToolStripMenuItem.Click += new System.EventHandler(this.resultToolStripMenuItem_Click);
+            // 
+            // lotsOfResultsToolStripMenuItem
+            // 
+            this.lotsOfResultsToolStripMenuItem.Name = "lotsOfResultsToolStripMenuItem";
+            this.lotsOfResultsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.lotsOfResultsToolStripMenuItem.Text = "Lots of results";
+            this.lotsOfResultsToolStripMenuItem.Click += new System.EventHandler(this.lotsOfResultsToolStripMenuItem_Click);
             // 
             // gb_log_rec
             // 
@@ -154,7 +198,7 @@
             this.gb_log_rec.Controls.Add(this.txt_log);
             this.gb_log_rec.Location = new System.Drawing.Point(575, 27);
             this.gb_log_rec.Name = "gb_log_rec";
-            this.gb_log_rec.Size = new System.Drawing.Size(690, 612);
+            this.gb_log_rec.Size = new System.Drawing.Size(690, 606);
             this.gb_log_rec.TabIndex = 5;
             this.gb_log_rec.TabStop = false;
             this.gb_log_rec.Text = "Log";
@@ -169,7 +213,7 @@
             this.txt_log.Multiline = true;
             this.txt_log.Name = "txt_log";
             this.txt_log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_log.Size = new System.Drawing.Size(678, 581);
+            this.txt_log.Size = new System.Drawing.Size(678, 565);
             this.txt_log.TabIndex = 0;
             // 
             // groupBox2
@@ -232,7 +276,7 @@
             this.tbc_p_needs.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_needs.Name = "tbc_p_needs";
             this.tbc_p_needs.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_needs.Size = new System.Drawing.Size(500, 542);
+            this.tbc_p_needs.Size = new System.Drawing.Size(543, 542);
             this.tbc_p_needs.TabIndex = 1;
             this.tbc_p_needs.Text = "Needs";
             this.tbc_p_needs.UseVisualStyleBackColor = true;
@@ -392,7 +436,7 @@
             this.tbc_p_extrainfo.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_extrainfo.Name = "tbc_p_extrainfo";
             this.tbc_p_extrainfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_extrainfo.Size = new System.Drawing.Size(500, 542);
+            this.tbc_p_extrainfo.Size = new System.Drawing.Size(543, 542);
             this.tbc_p_extrainfo.TabIndex = 2;
             this.tbc_p_extrainfo.Text = "Constraints";
             this.tbc_p_extrainfo.UseVisualStyleBackColor = true;
@@ -566,7 +610,7 @@
             this.tbc_p_recommendation.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_recommendation.Name = "tbc_p_recommendation";
             this.tbc_p_recommendation.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_recommendation.Size = new System.Drawing.Size(500, 542);
+            this.tbc_p_recommendation.Size = new System.Drawing.Size(543, 542);
             this.tbc_p_recommendation.TabIndex = 3;
             this.tbc_p_recommendation.Text = "Extra Information";
             this.tbc_p_recommendation.UseVisualStyleBackColor = true;
@@ -746,61 +790,18 @@
             this.label1.Size = new System.Drawing.Size(0, 20);
             this.label1.TabIndex = 14;
             // 
-            // sampleInputToolStripMenuItem
-            // 
-            this.sampleInputToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noResultToolStripMenuItem,
-            this.resultToolStripMenuItem,
-            this.lotsOfResultsToolStripMenuItem});
-            this.sampleInputToolStripMenuItem.Name = "sampleInputToolStripMenuItem";
-            this.sampleInputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.sampleInputToolStripMenuItem.Text = "Sample Input";
-
-            // 
-            // noResultToolStripMenuItem
-            // 
-            this.noResultToolStripMenuItem.Name = "noResultToolStripMenuItem";
-            this.noResultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.noResultToolStripMenuItem.Text = "No Result";
-            this.noResultToolStripMenuItem.Click += new System.EventHandler(this.noResultToolStripMenuItem_Click);
-            // 
-            // resultToolStripMenuItem
-            // 
-            this.resultToolStripMenuItem.Name = "resultToolStripMenuItem";
-            this.resultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.resultToolStripMenuItem.Text = "1 Result";
-            this.resultToolStripMenuItem.Click += new System.EventHandler(this.resultToolStripMenuItem_Click);
-            // 
-            // lotsOfResultsToolStripMenuItem
-            // 
-            this.lotsOfResultsToolStripMenuItem.Name = "lotsOfResultsToolStripMenuItem";
-            this.lotsOfResultsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.lotsOfResultsToolStripMenuItem.Text = "Lots of results";
-            this.lotsOfResultsToolStripMenuItem.Click += new System.EventHandler(this.lotsOfResultsToolStripMenuItem_Click);
-            // 
-            // saveOutputToolStripMenuItem
-            // 
-            this.saveOutputToolStripMenuItem.Name = "saveOutputToolStripMenuItem";
-            this.saveOutputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveOutputToolStripMenuItem.Text = "Save Output";
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
-            // 
             // frm_CDT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1277, 669);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.gb_log_rec);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "frm_CDT";
