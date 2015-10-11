@@ -24,7 +24,7 @@ namespace CDT
         List<gpu> theGPUS = new List<gpu>();
 
         cluster bestCluster = null;
-        string bestClusterMsg = "";
+        List<string> bestClusterMsg = new List<string>();
 
         ConcurrentBag<rack> allPossibleRacks = new ConcurrentBag<rack>();
         ConcurrentBag<cluster> viableClusters = new ConcurrentBag<cluster>();
@@ -362,8 +362,8 @@ namespace CDT
                 if (viableClusters.Count == 1)
                 {
                     bestCluster = viableClusters.ElementAt(0);
-                    bestClusterMsg = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
-                    txt_log.Text = bestClusterMsg;              
+                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    bestClusterMsg = txt_log.Lines.ToList();              
                 }
                 else if (viableClusters.Count > 1)
                 {
@@ -431,19 +431,19 @@ namespace CDT
                     }
 
                     bestCluster = tmpList.ElementAt(0);
-                    bestClusterMsg = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
-                    bestClusterMsg += Environment.NewLine + Environment.NewLine + "Priorities:" +
+                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    txt_log.Text += Environment.NewLine + Environment.NewLine + "Priorities:" +
                                                                          Environment.NewLine + "1st:\t" + getPriorityString(p1) + "\tFiltered out\t" + beforeFilter1 + "/"+ viableClusters.Count +
                                                                          Environment.NewLine + "2nd:\t" + getPriorityString(p2) + "\tFiltered out\t" + beforeFilter2 + "/" + viableClusters.Count +
                                                                          Environment.NewLine + "3rd:\t" + getPriorityString(p3) + "\tFiltered out\t" + beforeFilter3 + "/" + viableClusters.Count;
 
-                    txt_log.Text = bestClusterMsg;    
+                    
+                    bestClusterMsg = txt_log.Lines.ToList();   
 
                 }
                 else
                 {
-                    bestClusterMsg = Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.";
-                    txt_log.AppendText(bestClusterMsg);
+                    txt_log.Text = Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.";
                 }
                 readyToGenerateClusters = true;
 
@@ -1135,11 +1135,16 @@ namespace CDT
                 {
                     path = x.FileName;
                 }
+                try
+                {
 
-                TextWriter writer = new StreamWriter(path);
-                serializer.Serialize(writer, con);
-                writer.Close();
-                MessageBox.Show("File saved.");
+                    TextWriter writer = new StreamWriter(path);
+                    serializer.Serialize(writer, con);
+                    writer.Close();
+                    MessageBox.Show("File saved.");
+                }
+                catch (Exception) { }
+
             }
         }
 
@@ -1166,9 +1171,12 @@ namespace CDT
             setInput(LoadedObj.getValues());
             bestClusterMsg = LoadedObj.getRecommendation();
 
-            txt_log.Text = bestClusterMsg;
+            txt_log.Clear();
+
+            foreach (string s in bestClusterMsg)
+                txt_log.AppendText(s + Environment.NewLine);
             
-            if(bestClusterMsg.Length < 5)
+            if(bestClusterMsg.Count < 5)
             {
                 txt_log.AppendText("Input values loaded from file. Proceed to generation.");
                 MessageBox.Show("Project Loaded without recommendation.");

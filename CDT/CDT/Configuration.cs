@@ -12,15 +12,15 @@ namespace CDT
     {
         [XmlArray("ClusterFile")]
         public List<string> values;
-        public string recommendation;
+        public List<string> recommendation;
 
         public Configuration()
         {
             values = new List<string>();
-            recommendation = "";
+            recommendation = new List<string>();
         }
 
-        public void setValuesAndRecommendation(List<string> listIn,string rec)
+        public void setValuesAndRecommendation(List<string> listIn,List<string> rec)
         {
             values = listIn;
             recommendation = rec;
@@ -36,7 +36,7 @@ namespace CDT
             return values;
         }
 
-        public string getRecommendation()
+        public List<string> getRecommendation()
         {
             return recommendation;
         }
