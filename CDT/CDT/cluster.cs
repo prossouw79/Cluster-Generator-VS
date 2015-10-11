@@ -115,15 +115,36 @@ namespace ClusterDesignTool
 			return (getClusterCPUGFLOPS() + (getClusterGPUTFLOPS_sp() * 1000) + (getClusterGPUTFLOPS_dp() * 1000))/getClusterTDP();
 		}
 
+        public Double getTotal_Performance()
+        {
+            return getClusterCPUGFLOPS() + (getClusterGPUTFLOPS_sp()/1000);
+        }
+
 		public string getDetails()
 		{
             string msg =                 "===========CLUSTER SOLUTION===========";
             msg += Environment.NewLine + "Cluster size:\t\t" + numOfRacks + " Racks";
-            msg += Environment.NewLine + "Rack Details:\t" + rackUsed.toString();;
+            msg += Environment.NewLine + "Rack Details:\t\t" + rackUsed.toString();
+            msg += Environment.NewLine;
             msg += Environment.NewLine + "============SPECIFICATIONS============";
-            msg += Environment.NewLine + "TOTAL CPU PEAK PERFORMANCE:\t" + getClusterCPUGFLOPS() + "\t GFLOPS";
+
+
+            double clustercpugflops = getClusterCPUGFLOPS();
+            if (clustercpugflops < 1000)
+                msg += Environment.NewLine + "TOTAL CPU PEAK PERFORMANCE:\t" + clustercpugflops + "\t GFLOPS";
+            else if (clustercpugflops >= 1000 && clustercpugflops <= 1000000)
+                msg += Environment.NewLine + "TOTAL CPU PEAK PERFORMANCE:\t" + clustercpugflops/1000 + "\t TFLOPS";
+            else
+                msg += Environment.NewLine + "TOTAL CPU PEAK PERFORMANCE:\t" + clustercpugflops / 1000000 + "\t PFLOPS";
+
             msg += Environment.NewLine + "TOTAL GPU SP PEAK PERFORMANCE:\t" + getClusterGPUTFLOPS_sp() + "\t TFLOPS";
             msg += Environment.NewLine + "TOTAL GPU DP PEAK PERFORMANCE:\t" + getClusterGPUTFLOPS_dp() + "\t TFLOPS";
+            msg += Environment.NewLine;
+
+            if (getRackUsed().getNodeUsed().getCpuUsed().isHyperThreaded())
+                msg += Environment.NewLine + "TOTAL CPU CORES PHYSICAL:\t" + getNumberOfCores() + " (" + (getNumberOfCores() * 2) + " threads)";
+            else
+                msg += Environment.NewLine + "TOTAL CPU CORES:\t\t" + getNumberOfCores() + "\t ";
             msg += Environment.NewLine + "TOTAL RAM (GB):\t\t\t" + getClusterRAM() + "\t GB";
             msg += Environment.NewLine + "TOTAL RAM PER CORE (GB):\t\t" + getRAMperCore() + "\t GB";
             msg += Environment.NewLine + "TOTAL VRAM (GB):\t\t\t" + getClusterVRAM() + "\t GB";
@@ -150,7 +171,7 @@ namespace ClusterDesignTool
             }
 
 
-            msg += Environment.NewLine + "TOTAL INITIAL COST:\t\t" + getClusterCost() + "\t USD"; 
+            msg += Environment.NewLine + "TOTAL INITIAL COST:\t\t" + getClusterCost() + "\t USD";
 			return msg;
 		}
 	}

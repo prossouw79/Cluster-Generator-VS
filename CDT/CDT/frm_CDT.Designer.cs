@@ -38,7 +38,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbc = new System.Windows.Forms.TabControl();
             this.tbc_p_welcome = new System.Windows.Forms.TabPage();
-            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.txt_welcome = new System.Windows.Forms.TextBox();
             this.tbc_p_needs = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
@@ -59,15 +59,15 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.txt_total_budget = new System.Windows.Forms.TextBox();
             this.txt_monthly_power_budget = new System.Windows.Forms.TextBox();
             this.txt_max_power_delivery = new System.Windows.Forms.TextBox();
             this.txt_max_rack_power = new System.Windows.Forms.TextBox();
             this.txt_max_racks = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.tbc_p_recommendation = new System.Windows.Forms.TabPage();
             this.btn_reset = new System.Windows.Forms.Button();
             this.btn_start = new System.Windows.Forms.Button();
@@ -83,6 +83,12 @@
             this.txt_weekly_load_days = new System.Windows.Forms.TextBox();
             this.txt_electricity_cost = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.sampleInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noResultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lotsOfResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gb_log_rec.SuspendLayout();
@@ -101,9 +107,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.prg_1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 589);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 647);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1035, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1277, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -119,18 +125,23 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1035, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1277, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveOutputToolStripMenuItem,
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // helpToolStripMenuItem
             // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sampleInputToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -141,9 +152,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gb_log_rec.Controls.Add(this.txt_log);
-            this.gb_log_rec.Location = new System.Drawing.Point(576, 27);
+            this.gb_log_rec.Location = new System.Drawing.Point(575, 27);
             this.gb_log_rec.Name = "gb_log_rec";
-            this.gb_log_rec.Size = new System.Drawing.Size(447, 554);
+            this.gb_log_rec.Size = new System.Drawing.Size(690, 612);
             this.gb_log_rec.TabIndex = 5;
             this.gb_log_rec.TabStop = false;
             this.gb_log_rec.Text = "Log";
@@ -158,15 +169,17 @@
             this.txt_log.Multiline = true;
             this.txt_log.Name = "txt_log";
             this.txt_log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_log.Size = new System.Drawing.Size(435, 523);
+            this.txt_log.Size = new System.Drawing.Size(678, 581);
             this.txt_log.TabIndex = 0;
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.tbc);
             this.groupBox2.Location = new System.Drawing.Point(12, 27);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(558, 554);
+            this.groupBox2.Size = new System.Drawing.Size(563, 606);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Cluster Design Tool";
@@ -184,31 +197,32 @@
             this.tbc.Multiline = true;
             this.tbc.Name = "tbc";
             this.tbc.SelectedIndex = 0;
-            this.tbc.Size = new System.Drawing.Size(546, 523);
+            this.tbc.Size = new System.Drawing.Size(551, 575);
             this.tbc.TabIndex = 4;
             // 
             // tbc_p_welcome
             // 
-            this.tbc_p_welcome.Controls.Add(this.textBox15);
+            this.tbc_p_welcome.Controls.Add(this.txt_welcome);
             this.tbc_p_welcome.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_welcome.Name = "tbc_p_welcome";
             this.tbc_p_welcome.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_welcome.Size = new System.Drawing.Size(538, 490);
+            this.tbc_p_welcome.Size = new System.Drawing.Size(543, 542);
             this.tbc_p_welcome.TabIndex = 0;
             this.tbc_p_welcome.Text = "Welcome";
             this.tbc_p_welcome.UseVisualStyleBackColor = true;
             // 
-            // textBox15
+            // txt_welcome
             // 
-            this.textBox15.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txt_welcome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox15.Location = new System.Drawing.Point(6, 6);
-            this.textBox15.Multiline = true;
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(526, 478);
-            this.textBox15.TabIndex = 2;
-            this.textBox15.Text = "Welcome to the Cluster Design Tool. This simple tool will help guide the creation" +
+            this.txt_welcome.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_welcome.Location = new System.Drawing.Point(6, 6);
+            this.txt_welcome.Multiline = true;
+            this.txt_welcome.Name = "txt_welcome";
+            this.txt_welcome.Size = new System.Drawing.Size(531, 530);
+            this.txt_welcome.TabIndex = 2;
+            this.txt_welcome.Text = "Welcome to the Cluster Design Tool. This simple tool will help guide the creation" +
     " of a cluster system that meets your needs, taking into account your available b" +
     "udget, power and space constraints.";
             // 
@@ -218,7 +232,7 @@
             this.tbc_p_needs.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_needs.Name = "tbc_p_needs";
             this.tbc_p_needs.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_needs.Size = new System.Drawing.Size(538, 490);
+            this.tbc_p_needs.Size = new System.Drawing.Size(500, 542);
             this.tbc_p_needs.TabIndex = 1;
             this.tbc_p_needs.Text = "Needs";
             this.tbc_p_needs.UseVisualStyleBackColor = true;
@@ -252,7 +266,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 449);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(488, 501);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label2
@@ -305,72 +319,72 @@
             this.txt_min_gpu_tflops_sp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_min_gpu_tflops_sp.Location = new System.Drawing.Point(305, 35);
+            this.txt_min_gpu_tflops_sp.Location = new System.Drawing.Point(267, 35);
             this.txt_min_gpu_tflops_sp.Name = "txt_min_gpu_tflops_sp";
             this.txt_min_gpu_tflops_sp.Size = new System.Drawing.Size(218, 26);
             this.txt_min_gpu_tflops_sp.TabIndex = 6;
-            this.txt_min_gpu_tflops_sp.Text = "8";
+            this.txt_min_gpu_tflops_sp.Text = "400";
             // 
             // txt_min_gpu_tflops_dp
             // 
             this.txt_min_gpu_tflops_dp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_min_gpu_tflops_dp.Location = new System.Drawing.Point(305, 67);
+            this.txt_min_gpu_tflops_dp.Location = new System.Drawing.Point(267, 67);
             this.txt_min_gpu_tflops_dp.Name = "txt_min_gpu_tflops_dp";
             this.txt_min_gpu_tflops_dp.Size = new System.Drawing.Size(218, 26);
             this.txt_min_gpu_tflops_dp.TabIndex = 7;
-            this.txt_min_gpu_tflops_dp.Text = "4";
+            this.txt_min_gpu_tflops_dp.Text = "150";
             // 
             // txt_min_ram
             // 
             this.txt_min_ram.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_min_ram.Location = new System.Drawing.Point(305, 99);
+            this.txt_min_ram.Location = new System.Drawing.Point(267, 99);
             this.txt_min_ram.Name = "txt_min_ram";
             this.txt_min_ram.Size = new System.Drawing.Size(218, 26);
             this.txt_min_ram.TabIndex = 8;
-            this.txt_min_ram.Text = "128";
+            this.txt_min_ram.Text = "512";
             // 
             // txt_min_vram
             // 
             this.txt_min_vram.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_min_vram.Location = new System.Drawing.Point(305, 131);
+            this.txt_min_vram.Location = new System.Drawing.Point(267, 131);
             this.txt_min_vram.Name = "txt_min_vram";
             this.txt_min_vram.Size = new System.Drawing.Size(218, 26);
             this.txt_min_vram.TabIndex = 9;
-            this.txt_min_vram.Text = "32";
+            this.txt_min_vram.Text = "512";
             // 
             // txt_min_cpu_gflops
             // 
             this.txt_min_cpu_gflops.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_min_cpu_gflops.Location = new System.Drawing.Point(305, 3);
+            this.txt_min_cpu_gflops.Location = new System.Drawing.Point(267, 3);
             this.txt_min_cpu_gflops.Name = "txt_min_cpu_gflops";
             this.txt_min_cpu_gflops.Size = new System.Drawing.Size(218, 26);
             this.txt_min_cpu_gflops.TabIndex = 5;
-            this.txt_min_cpu_gflops.Text = "256";
+            this.txt_min_cpu_gflops.Text = "700000";
             // 
             // label20
             // 
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(3, 160);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(290, 20);
+            this.label20.Size = new System.Drawing.Size(256, 40);
             this.label20.TabIndex = 10;
             this.label20.Text = "Minimum RAM per Processor Core (GB)";
             // 
             // txt_ram_per_core
             // 
-            this.txt_ram_per_core.Location = new System.Drawing.Point(305, 163);
+            this.txt_ram_per_core.Location = new System.Drawing.Point(267, 163);
             this.txt_ram_per_core.Name = "txt_ram_per_core";
             this.txt_ram_per_core.Size = new System.Drawing.Size(218, 26);
             this.txt_ram_per_core.TabIndex = 11;
-            this.txt_ram_per_core.Text = "2";
+            this.txt_ram_per_core.Text = "4";
             // 
             // tbc_p_extrainfo
             // 
@@ -378,7 +392,7 @@
             this.tbc_p_extrainfo.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_extrainfo.Name = "tbc_p_extrainfo";
             this.tbc_p_extrainfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_extrainfo.Size = new System.Drawing.Size(538, 490);
+            this.tbc_p_extrainfo.Size = new System.Drawing.Size(500, 542);
             this.tbc_p_extrainfo.TabIndex = 2;
             this.tbc_p_extrainfo.Text = "Constraints";
             this.tbc_p_extrainfo.UseVisualStyleBackColor = true;
@@ -395,15 +409,15 @@
             this.tableLayoutPanel2.Controls.Add(this.label9, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.label11, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.label12, 0, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txt_total_budget, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txt_monthly_power_budget, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.txt_max_rack_power, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txt_max_racks, 1, 7);
             this.tableLayoutPanel2.Controls.Add(this.label14, 0, 7);
             this.tableLayoutPanel2.Controls.Add(this.label10, 1, 3);
             this.tableLayoutPanel2.Controls.Add(this.label7, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label13, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.txt_total_budget, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.txt_monthly_power_budget, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.txt_max_power_delivery, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.txt_max_rack_power, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.txt_max_racks, 1, 7);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 6);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 10;
@@ -417,7 +431,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(526, 302);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(488, 354);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // label8
@@ -456,61 +470,6 @@
             this.label12.TabIndex = 5;
             this.label12.Text = "Max Power Draw per Rack (Watts)";
             // 
-            // txt_total_budget
-            // 
-            this.txt_total_budget.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_total_budget.Location = new System.Drawing.Point(260, 23);
-            this.txt_total_budget.Name = "txt_total_budget";
-            this.txt_total_budget.Size = new System.Drawing.Size(263, 26);
-            this.txt_total_budget.TabIndex = 7;
-            this.txt_total_budget.Text = "100000";
-            // 
-            // txt_monthly_power_budget
-            // 
-            this.txt_monthly_power_budget.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_monthly_power_budget.Location = new System.Drawing.Point(260, 55);
-            this.txt_monthly_power_budget.Name = "txt_monthly_power_budget";
-            this.txt_monthly_power_budget.Size = new System.Drawing.Size(263, 26);
-            this.txt_monthly_power_budget.TabIndex = 8;
-            this.txt_monthly_power_budget.Text = "2000";
-            // 
-            // txt_max_power_delivery
-            // 
-            this.txt_max_power_delivery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_max_power_delivery.Location = new System.Drawing.Point(260, 107);
-            this.txt_max_power_delivery.Name = "txt_max_power_delivery";
-            this.txt_max_power_delivery.Size = new System.Drawing.Size(263, 26);
-            this.txt_max_power_delivery.TabIndex = 9;
-            this.txt_max_power_delivery.Text = "10000";
-            // 
-            // txt_max_rack_power
-            // 
-            this.txt_max_rack_power.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_max_rack_power.Location = new System.Drawing.Point(260, 139);
-            this.txt_max_rack_power.Name = "txt_max_rack_power";
-            this.txt_max_rack_power.Size = new System.Drawing.Size(263, 26);
-            this.txt_max_rack_power.TabIndex = 10;
-            this.txt_max_rack_power.Text = "2500";
-            // 
-            // txt_max_racks
-            // 
-            this.txt_max_racks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_max_racks.Location = new System.Drawing.Point(260, 191);
-            this.txt_max_racks.Name = "txt_max_racks";
-            this.txt_max_racks.Size = new System.Drawing.Size(263, 26);
-            this.txt_max_racks.TabIndex = 12;
-            this.txt_max_racks.Text = "5";
-            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -528,7 +487,7 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(260, 84);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(263, 20);
+            this.label10.Size = new System.Drawing.Size(225, 20);
             this.label10.TabIndex = 3;
             this.label10.Text = "Power Constraints";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -541,7 +500,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(260, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(263, 20);
+            this.label7.Size = new System.Drawing.Size(225, 20);
             this.label7.TabIndex = 0;
             this.label7.Text = "Budget Constraints";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -554,10 +513,50 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(260, 168);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(263, 20);
+            this.label13.Size = new System.Drawing.Size(225, 20);
             this.label13.TabIndex = 6;
             this.label13.Text = "Space Constraint";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txt_total_budget
+            // 
+            this.txt_total_budget.Location = new System.Drawing.Point(260, 23);
+            this.txt_total_budget.Name = "txt_total_budget";
+            this.txt_total_budget.Size = new System.Drawing.Size(225, 26);
+            this.txt_total_budget.TabIndex = 12;
+            this.txt_total_budget.Text = "500000";
+            // 
+            // txt_monthly_power_budget
+            // 
+            this.txt_monthly_power_budget.Location = new System.Drawing.Point(260, 55);
+            this.txt_monthly_power_budget.Name = "txt_monthly_power_budget";
+            this.txt_monthly_power_budget.Size = new System.Drawing.Size(225, 26);
+            this.txt_monthly_power_budget.TabIndex = 13;
+            this.txt_monthly_power_budget.Text = "4000";
+            // 
+            // txt_max_power_delivery
+            // 
+            this.txt_max_power_delivery.Location = new System.Drawing.Point(260, 107);
+            this.txt_max_power_delivery.Name = "txt_max_power_delivery";
+            this.txt_max_power_delivery.Size = new System.Drawing.Size(225, 26);
+            this.txt_max_power_delivery.TabIndex = 14;
+            this.txt_max_power_delivery.Text = "70000";
+            // 
+            // txt_max_rack_power
+            // 
+            this.txt_max_rack_power.Location = new System.Drawing.Point(260, 139);
+            this.txt_max_rack_power.Name = "txt_max_rack_power";
+            this.txt_max_rack_power.Size = new System.Drawing.Size(225, 26);
+            this.txt_max_rack_power.TabIndex = 15;
+            this.txt_max_rack_power.Text = "10000";
+            // 
+            // txt_max_racks
+            // 
+            this.txt_max_racks.Location = new System.Drawing.Point(260, 191);
+            this.txt_max_racks.Name = "txt_max_racks";
+            this.txt_max_racks.Size = new System.Drawing.Size(225, 26);
+            this.txt_max_racks.TabIndex = 16;
+            this.txt_max_racks.Text = "5";
             // 
             // tbc_p_recommendation
             // 
@@ -567,7 +566,7 @@
             this.tbc_p_recommendation.Location = new System.Drawing.Point(4, 29);
             this.tbc_p_recommendation.Name = "tbc_p_recommendation";
             this.tbc_p_recommendation.Padding = new System.Windows.Forms.Padding(3);
-            this.tbc_p_recommendation.Size = new System.Drawing.Size(538, 490);
+            this.tbc_p_recommendation.Size = new System.Drawing.Size(500, 542);
             this.tbc_p_recommendation.TabIndex = 3;
             this.tbc_p_recommendation.Text = "Extra Information";
             this.tbc_p_recommendation.UseVisualStyleBackColor = true;
@@ -576,11 +575,11 @@
             // 
             this.btn_reset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_reset.Location = new System.Drawing.Point(6, 402);
+            this.btn_reset.Location = new System.Drawing.Point(6, 454);
             this.btn_reset.Name = "btn_reset";
-            this.btn_reset.Size = new System.Drawing.Size(527, 38);
+            this.btn_reset.Size = new System.Drawing.Size(489, 38);
             this.btn_reset.TabIndex = 2;
-            this.btn_reset.Text = "< STOP >";
+            this.btn_reset.Text = "< CLEAR >";
             this.btn_reset.UseVisualStyleBackColor = true;
             this.btn_reset.Click += new System.EventHandler(this.btn_reset_Click_1);
             // 
@@ -588,9 +587,9 @@
             // 
             this.btn_start.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_start.Location = new System.Drawing.Point(5, 446);
+            this.btn_start.Location = new System.Drawing.Point(5, 498);
             this.btn_start.Name = "btn_start";
-            this.btn_start.Size = new System.Drawing.Size(527, 38);
+            this.btn_start.Size = new System.Drawing.Size(489, 38);
             this.btn_start.TabIndex = 1;
             this.btn_start.Text = "< START >";
             this.btn_start.UseVisualStyleBackColor = true;
@@ -628,7 +627,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(526, 345);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(488, 397);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // label15
@@ -747,12 +746,56 @@
             this.label1.Size = new System.Drawing.Size(0, 20);
             this.label1.TabIndex = 14;
             // 
+            // sampleInputToolStripMenuItem
+            // 
+            this.sampleInputToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noResultToolStripMenuItem,
+            this.resultToolStripMenuItem,
+            this.lotsOfResultsToolStripMenuItem});
+            this.sampleInputToolStripMenuItem.Name = "sampleInputToolStripMenuItem";
+            this.sampleInputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sampleInputToolStripMenuItem.Text = "Sample Input";
+
+            // 
+            // noResultToolStripMenuItem
+            // 
+            this.noResultToolStripMenuItem.Name = "noResultToolStripMenuItem";
+            this.noResultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noResultToolStripMenuItem.Text = "No Result";
+            this.noResultToolStripMenuItem.Click += new System.EventHandler(this.noResultToolStripMenuItem_Click);
+            // 
+            // resultToolStripMenuItem
+            // 
+            this.resultToolStripMenuItem.Name = "resultToolStripMenuItem";
+            this.resultToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resultToolStripMenuItem.Text = "1 Result";
+            this.resultToolStripMenuItem.Click += new System.EventHandler(this.resultToolStripMenuItem_Click);
+            // 
+            // lotsOfResultsToolStripMenuItem
+            // 
+            this.lotsOfResultsToolStripMenuItem.Name = "lotsOfResultsToolStripMenuItem";
+            this.lotsOfResultsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.lotsOfResultsToolStripMenuItem.Text = "Lots of results";
+            this.lotsOfResultsToolStripMenuItem.Click += new System.EventHandler(this.lotsOfResultsToolStripMenuItem_Click);
+            // 
+            // saveOutputToolStripMenuItem
+            // 
+            this.saveOutputToolStripMenuItem.Name = "saveOutputToolStripMenuItem";
+            this.saveOutputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveOutputToolStripMenuItem.Text = "Save Output";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            // 
             // frm_CDT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1035, 611);
+            this.ClientSize = new System.Drawing.Size(1277, 669);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.gb_log_rec);
             this.Controls.Add(this.statusStrip1);
@@ -799,7 +842,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TabControl tbc;
         private System.Windows.Forms.TabPage tbc_p_welcome;
-        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.TextBox txt_welcome;
         private System.Windows.Forms.TabPage tbc_p_needs;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label2;
@@ -835,15 +878,21 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox txt_total_budget;
         private System.Windows.Forms.TextBox txt_monthly_power_budget;
         private System.Windows.Forms.TextBox txt_max_power_delivery;
         private System.Windows.Forms.TextBox txt_max_rack_power;
         private System.Windows.Forms.TextBox txt_max_racks;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ToolStripMenuItem saveOutputToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sampleInputToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noResultToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resultToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lotsOfResultsToolStripMenuItem;
 
 
 

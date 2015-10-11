@@ -26,17 +26,19 @@ namespace CDT
         ConcurrentBag<rack> allPossibleRacks = new ConcurrentBag<rack>();
         ConcurrentBag<cluster> viableClusters = new ConcurrentBag<cluster>();
 
+        ConcurrentBag<cluster> tempViableClusters = new ConcurrentBag<cluster>();
+
         List<int> nodesInRack = new List<int>();
         List<int> cpusInNode = new List<int>();
         List<int> memsInNode = new List<int>();
         List<int> gpusInNode = new List<int>();
 
-        int viableClusterCount = 0;
-
         char p1, p2, p3;
 
         Boolean readyToGenerateClusters = false;
         Boolean doneGeneratingCluster = false;
+
+        bool inputChanged = false;
 
         //performance goals
         double cpu_gflops, gpu_sp_tflops, gpu_dp_gflops, min_ram, min_vram, min_ram_per_core;
@@ -74,16 +76,37 @@ namespace CDT
             enabledIndexes.Add(0);
             TabPage firstTab = tbc.TabPages[0];
 
-            cpusInNode.Add(1); cpusInNode.Add(2); cpusInNode.Add(3); cpusInNode.Add(4);
+            cpusInNode.Add(1); cpusInNode.Add(2); cpusInNode.Add(4);
             memsInNode.Add(2); memsInNode.Add(4); memsInNode.Add(8);
             gpusInNode.Add(0); gpusInNode.Add(1); gpusInNode.Add(2); gpusInNode.Add(4);
             nodesInRack.Add(4); nodesInRack.Add(8); nodesInRack.Add(16); nodesInRack.Add(24);
 
-            priorities.Add("Maximise Cost Efficiency"); priorities.Add("Maximise Power Efficiency"); priorities.Add("Maximise Space Efficiency");
-            prioritiesLeft = priorities;
+            txt_welcome.Text = "Welcome to the Cluster Design Tool. This simple tool will help guide the creation of a cluster system that meets your needs, taking into account your available budget, power and space constraints." +
+               Environment.NewLine + Environment.NewLine + "---Assumputions---" + Environment.NewLine + Environment.NewLine +
+                "->  Racks in cluster are identical" + Environment.NewLine +
+                "->  Nodes in rack are identical" + Environment.NewLine +
+                "-> Only CPUs, GPUs and Memory components are accounted for." + Environment.NewLine +
+                "-> Virtual Cores aren't taken into account for FLOPS calculation." + 
+                 Environment.NewLine + Environment.NewLine +
+                 "---Instructions---" + Environment.NewLine + Environment.NewLine +
+                 "-> Input your needs of the cluster on the second page."+ Environment.NewLine +
+                 "-> Input your constraints of the cluster on the third page."+ Environment.NewLine +
+                 "-> Input the extra information on the final page."+ Environment.NewLine +
+                 "-> Press the <START> button on the final page to start the generation process.";
+
+            initializePriorities();
 
             Thread init = new Thread(new ThreadStart(this.initializationMethod));
             init.Start();
+        }
+
+        private void initializePriorities()
+        {
+            priorities.Clear();
+
+            priorities.Add("Maximise Cost Efficiency"); priorities.Add("Maximise Power Efficiency"); priorities.Add("Maximise Space Efficiency");
+            priorities.Add("Maximise Performance"); priorities.Add("Minimise Initial Cost");
+            prioritiesLeft = priorities;
         }
 
         private void initializationMethod()
@@ -262,6 +285,8 @@ namespace CDT
             int monthHours = 4 * (int)weekly_load_days * (int)daily_load_hours;
             double costPerHour = electricity_cost * (clust.getClusterTDP() / 1000);
 
+            
+
             return costPerHour * monthHours * (average_load_percentage / 100);
         }
 
@@ -289,11 +314,10 @@ namespace CDT
             int step = (int)(prg_1.Maximum / (int)max_racks) - 1;
 
             int clustersSoFar = 0;
+            long start = CurrentTimeSeconds();
 
             for (int k = (int)max_racks; k >= 1; k--)
             {
-                if (zeroResultCount < 3)
-                {
                     Parallel.ForEach(allPossibleRacks, currentRack =>
                     {
 
@@ -325,18 +349,9 @@ namespace CDT
 
 
                     });
-                }
-                else
-                {
-                    ended = true;
-                }
+                
                     prg_1.Value = Math.Abs(prg_1.Maximum - (k * step));
                     int clustersOfThisSize = viableClusters.Count - clustersSoFar;
-
-                    if (clustersOfThisSize == 0)
-                        zeroResultCount++;
-                    else
-                        zeroResultCount = 0;
 
                     txt_log.AppendText(Environment.NewLine + "Viable Clusters of size " + k + ":\t" + clustersOfThisSize);
                     clustersSoFar = viableClusters.Count;
@@ -345,30 +360,79 @@ namespace CDT
                 if (viableClusters.Count == 1)
                 {
                     bestCluster = viableClusters.ElementAt(0);
+                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
                 }
                 else if (viableClusters.Count > 1)
                 {
-                    txt_log.AppendText(Environment.NewLine + "Multiple(" + viableClusters.Count + ") viable solutions have been found, to get the best one for your needs we need to identify your priorities." +
-                                    "Select your primary and secondary priorities from the lists that follow. Press OK to Continue.");
                     setPriorities();
 
-                    ConcurrentBag<cluster> tmpList = binaryFilter(viableClusters, p1);
+                    int beforeFilter1 = 0;
+                    int beforeFilter2 = 0;
+                    int beforeFilter3 = 0;
+
+                    ConcurrentBag<cluster> tmpList = viableClusters;
+
 
                     int cnt = 0;
-                    while (tmpList.Count > 1)
+
+                    bool cont = true;
+                    while (cont)
                     {
-                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        //filter 1st priority
+                        int tmp1 = tmpList.Count;
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false; }
 
-                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
-                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        beforeFilter1 += Math.Abs(tmpList.Count - tmp1);
+                        tmp1 = tmpList.Count;
 
-                        tmpList = binaryFilter(tmpList, p3); txt_log.AppendText(Environment.NewLine + "Step " + ++cnt + " : " + +tmpList.Count);
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false; }
+
+                        beforeFilter1 += Math.Abs(tmpList.Count - tmp1);
+                        tmp1 = tmpList.Count;
+
+                        tmpList = binaryFilter(tmpList, p1); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false;};
+
+                        beforeFilter1 += Math.Abs(tmpList.Count - tmp1);
+                        tmp1 = tmpList.Count;
+
+                        //filter 2st priority
+
+                        int tmp2 = tmpList.Count;
+                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false;}
+
+                        beforeFilter2 += Math.Abs(tmpList.Count - tmp2);
+                        tmp2 = tmpList.Count;
+                        
+
+                        tmpList = binaryFilter(tmpList, p2); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false; }
+
+                        beforeFilter2 += Math.Abs(tmpList.Count - tmp2);
+                        tmp2 = tmpList.Count;
+
+                        //filter 3st priority
+
+                        int tmp3 = tmpList.Count;
+                        tmpList = binaryFilter(tmpList, p3); txt_log.AppendText(Environment.NewLine + "Finding optimal solution step " + ++cnt + " : " + +tmpList.Count);
+                        if (tmpList.Count > 1) { cont = false; }
+
+                        beforeFilter3 += Math.Abs(tmpList.Count - tmp3);
+                        tmp3 = tmpList.Count;
+
+                        while((beforeFilter1 + beforeFilter2 + beforeFilter3 + 1) < viableClusters.Count){if (beforeFilter2 > beforeFilter3) beforeFilter3++;else beforeFilter2++;
+                        }
                     }
 
                     bestCluster = tmpList.ElementAt(0);
-                    txt_log.Text = bestCluster.getDetails();
+                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    txt_log.Text += Environment.NewLine + Environment.NewLine + "Priorities:" +
+                                                                         Environment.NewLine + "1st:\t" + getPriorityString(p1) + "\tFiltered out\t" + beforeFilter1 + "/"+ viableClusters.Count +
+                                                                         Environment.NewLine + "2nd:\t" + getPriorityString(p2) + "\tFiltered out\t" + beforeFilter2 + "/" + viableClusters.Count +
+                                                                         Environment.NewLine + "3rd:\t" + getPriorityString(p3) + "\tFiltered out\t" + beforeFilter3 + "/" + viableClusters.Count;
 
                 }
                 else
@@ -426,6 +490,29 @@ namespace CDT
                 case 'P':
                     { //power efficiency
                         List<cluster> sortedList = listIn.AsParallel().OrderBy(o => o.getPerformance_to_Power_Usage()).ToList<cluster>();
+
+                        Parallel.ForEach(sortedList, c =>
+                        {
+                            if (returnList.Count < amount)
+                                returnList.Add(c);
+                        });
+                        break;
+                    }
+                case 'M':
+                    { //max power
+                        List<cluster> sortedList = listIn.AsParallel().OrderBy(o => o.getTotal_Performance()).ToList<cluster>();
+
+                        Parallel.ForEach(sortedList, c =>
+                        {
+                            if (returnList.Count < amount)
+                                returnList.Add(c);
+                        });
+                        break;
+                    }
+
+                case 'Q':
+                    { //max power
+                        List<cluster> sortedList = listIn.AsParallel().OrderByDescending(o => o.getClusterCost()).ToList<cluster>();
 
                         Parallel.ForEach(sortedList, c =>
                         {
@@ -597,8 +684,13 @@ namespace CDT
                         int frequencyMhz = int.Parse(partsC[3]);
                         int instructionsPerCycle = int.Parse(partsC[4]);
                         int numOfCores = int.Parse(partsC[5]);
+                        string hyperthreaded = partsC[6];
 
-                        cpu tmp = new cpu(frequencyMhz, instructionsPerCycle, numOfCores, componentName, componentCost, componentTDP);
+                        bool ht = false;
+                        if (hyperthreaded == "Y")
+                            ht = true;   
+
+                        cpu tmp = new cpu(frequencyMhz, instructionsPerCycle, numOfCores, componentName, componentCost, componentTDP,ht);
                         theCPUS.Add(tmp);
                     }
 
@@ -645,16 +737,6 @@ namespace CDT
                     }
                 }
 
-               /* string msg = "";
-
-                foreach (cpu c in theCPUS)
-                    msg += c.toString();
-                foreach (gpu g in theGPUS)
-                    msg += g.toString();
-                foreach (mem m in theMems)
-                    msg += m.toString();
-
-                MessageBox.Show(msg);*/
 
                 txt_log.BeginInvoke((Action)(() =>
                                     {
@@ -711,14 +793,18 @@ namespace CDT
             {
                 if (testInput())
                 {
-                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + System.DateTime.Now.ToLongTimeString() + " -> Generation Started: ");
-                    long start = CurrentTimeSeconds();
+                    txt_log.Clear();
+                    txt_log.Update();
 
-                    generateViableClusters();
-                    long secondsTaken = CurrentTimeSeconds() - start;
-                    if (viableClusters.Count > 0)
-                        txt_log.AppendText(Environment.NewLine + "Generation took: " + secondsTaken + " seconds.");
+                        txt_log.AppendText(Environment.NewLine + Environment.NewLine + System.DateTime.Now.ToLongTimeString() + " -> Generation Started: ");
+                        long start = CurrentTimeSeconds();
 
+                        generateViableClusters();
+                        long secondsTaken = CurrentTimeSeconds() - start;
+
+                        if (viableClusters.Count > 0)
+                            txt_log.AppendText(Environment.NewLine + "Generation took: ~ " + secondsTaken + " seconds.");
+                        inputChanged = false;
 
                     viableClusters = new ConcurrentBag<cluster>();//clear list
                 }
@@ -737,70 +823,220 @@ namespace CDT
         {
             return (long)(DateTime.UtcNow - Jan1st1970).TotalSeconds;
         }
+       
+        
         private void setPriorities()
         {
+            initializePriorities();
+
             string p1, p2, p3;
-            p1 = p2 = p3 = "unsassigned";
+            p1 = p2 = p3 = "unassigned";
 
-            prioritiesLeft = priorities;
-
-            InputBox.SetLanguage(InputBox.Language.English);
-            DialogResult res1 = InputBox.ShowDialog("Please select primary goal", "Select Goal:",
-                InputBox.Icon.Question, //Set icon type (default info)
-                InputBox.Buttons.OkCancel, //Set buttons (default ok)
-                InputBox.Type.ComboBox, //Set type (default nothing)
-                prioritiesLeft.ToArray(), //String field as ComboBox items (default null)
-                false, //Set visible in taskbar (default false)
-                new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular)); //Set font (default by system)
-
-            //Check InputBox result
-            if (res1 == System.Windows.Forms.DialogResult.OK || res1 == System.Windows.Forms.DialogResult.Yes)
+            while (p1 == "unassigned" || p2 == "unassigned" || p3 == "unassigned")
             {
-                p1 = InputBox.ResultValue; //Get returned value
-                prioritiesLeft.Remove(p1);
+                MessageBox.Show( "Multiple (" + viableClusters.Count + ") viable solutions have been found. In order to get the best one for your needs we need to identify your priorities." + Environment.NewLine + Environment.NewLine+
+               "At the prompts that follow, please select the priorities in order of importance. You MUST select 3 priorities. Press OK to Continue.", "Instructions", MessageBoxButtons.OK);
+
+                prioritiesLeft = priorities;
+
+                InputBox.SetLanguage(InputBox.Language.English);
+                DialogResult res1 = InputBox.ShowDialog("Please select primary goal", "Select Goal:",
+                    InputBox.Icon.Question, //Set icon type (default info)
+                    InputBox.Buttons.OkCancel, //Set buttons (default ok)
+                    InputBox.Type.ComboBox, //Set type (default nothing)
+                    prioritiesLeft.ToArray(), //String field as ComboBox items (default null)
+                    false, //Set visible in taskbar (default false)
+                    new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular)); //Set font (default by system)
+
+                //Check InputBox result
+                if (res1 == System.Windows.Forms.DialogResult.OK || res1 == System.Windows.Forms.DialogResult.Yes)
+                {
+                    p1 = InputBox.ResultValue; //Get returned value
+                    prioritiesLeft.Remove(p1);
+                }
+
+                //Save the DialogResult as res
+                DialogResult res2 = InputBox.ShowDialog("Please select secondary goal", "Select Goal:",
+                    InputBox.Icon.Question, //Set icon type (default info)
+                    InputBox.Buttons.OkCancel, //Set buttons (default ok)
+                    InputBox.Type.ComboBox, //Set type (default nothing)
+                    prioritiesLeft.ToArray(), //String field as ComboBox items (default null)
+                    false, //Set visible in taskbar (default false)
+                    new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular)); //Set font (default by system)
+
+                //Check InputBox result
+                if (res2 == System.Windows.Forms.DialogResult.OK || res2 == System.Windows.Forms.DialogResult.Yes)
+                {
+                    p2 = InputBox.ResultValue; //Get returned value
+                    prioritiesLeft.Remove(p2);
+                }
+
+
+                InputBox.SetLanguage(InputBox.Language.English);
+                DialogResult res3 = InputBox.ShowDialog("Please third primary goal", "Select Goal:",
+                    InputBox.Icon.Question, //Set icon type (default info)
+                    InputBox.Buttons.OkCancel, //Set buttons (default ok)
+                    InputBox.Type.ComboBox, //Set type (default nothing)
+                    prioritiesLeft.ToArray(), //String field as ComboBox items (default null)
+                    false, //Set visible in taskbar (default false)
+                    new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular)); //Set font (default by system)
+
+                //Check InputBox result
+                if (res1 == System.Windows.Forms.DialogResult.OK || res1 == System.Windows.Forms.DialogResult.Yes)
+                {
+                    p3 = InputBox.ResultValue; //Get returned value
+                    prioritiesLeft.Remove(p3);
+                }
+
+
+                switch (p1)
+                {
+
+                    case "Maximise Cost Efficiency": { this.p1 = 'C'; break; }
+                    case "Maximise Power Efficiency": { this.p1 = 'P'; break; }
+                    case "Maximise Space Efficiency": { this.p1 = 'S'; break; }
+                    case "Maximise Performance": { this.p1 = 'M'; break; }
+                    case "Minimise Initial Cost": { this.p1 = 'Q'; break; }
+
+                }
+                switch (p2)
+                {
+                    case "Maximise Cost Efficiency": { this.p2 = 'C'; break; }
+                    case "Maximise Power Efficiency": { this.p2 = 'P'; break; }
+                    case "Maximise Space Efficiency": { this.p2 = 'S'; break; }
+                    case "Maximise Performance": { this.p2 = 'M'; break; }
+                    case "Minimise Initial Cost": { this.p2 = 'Q'; break; }
+                }
+                switch (p3)
+                {
+                    case "Maximise Cost Efficiency": { this.p3 = 'C'; break; }
+                    case "Maximise Power Efficiency": { this.p3 = 'P'; break; }
+                    case "Maximise Space Efficiency": { this.p3 = 'S'; break; }
+                    case "Maximise Performance": { this.p3 = 'M'; break; }
+                    case "Minimise Initial Cost": { this.p3 = 'Q'; break; }
+                }
+            }
+        }
+
+        private string getPriorityString(char mode)
+        {
+            string msg = "";
+            switch(mode) 
+            {
+                case 'C': { msg = "Maximise Cost Efficiency"; break;}
+                case 'P': { msg = "Maximise Power Efficiency"; break; }
+                case 'S': { msg = "Maximise Space Efficiency"; break; }
+                case 'M': { msg = "Maximise Performance"; break; }
+                case 'Q': { msg = "Minimise Initial Cost"; break; }
+
             }
 
-            //Save the DialogResult as res
-            DialogResult res2 = InputBox.ShowDialog("Please select secondary goal", "Select Goal:",
-                InputBox.Icon.Question, //Set icon type (default info)
-                InputBox.Buttons.OkCancel, //Set buttons (default ok)
-                InputBox.Type.ComboBox, //Set type (default nothing)
-                prioritiesLeft.ToArray(), //String field as ComboBox items (default null)
-                false, //Set visible in taskbar (default false)
-                new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular)); //Set font (default by system)
+            return msg;
+        }
 
-            //Check InputBox result
-            if (res2 == System.Windows.Forms.DialogResult.OK || res2 == System.Windows.Forms.DialogResult.Yes)
+        private char getPriorityChar(string mode)
+        {
+            char msg = ' ';
+            switch (mode)
             {
-                p2 = InputBox.ResultValue; //Get returned value
-                prioritiesLeft.Remove(p2);
+                case "Maximise Cost Efficiency": { msg = 'C'; break; }
+                case "Maximise Power Efficiency": { msg = 'P'; break; }
+                case "Maximise Space Efficiency": { msg = 'S'; break; }
+                case "Maximise Performance": { msg = 'M'; break; }
+                case "Minimise Initial Cost": { msg = 'Q'; break; }
             }
-
-            p3 = prioritiesLeft.ElementAt(0);
-
-            switch (p1)
-            {
-                case "Maximise Cost Efficiency": { this.p1 = 'C'; break; }
-                case "Maximise Power Efficiency": { this.p1 = 'P'; break; }
-                case "Maximise Space Efficiency": { this.p1 = 'S'; break; }
-            }
-            switch (p2)
-            {
-                case "Maximise Cost Efficiency": { this.p2 = 'C'; break; }
-                case "Maximise Power Efficiency": { this.p2 = 'P'; break; }
-                case "Maximise Space Efficiency": { this.p2 = 'S'; break; }
-            }
-            switch (p3)
-            {
-                case "Maximise Cost Efficiency": { this.p3 = 'C'; break; }
-                case "Maximise Power Efficiency": { this.p3 = 'P'; break; }
-                case "Maximise Space Efficiency": { this.p3 = 'S'; break; }
-            }
+            return msg;
         }
 
         private void btn_reset_Click_1(object sender, EventArgs e)
         {
+            txt_min_cpu_gflops.Clear();
+            txt_min_gpu_tflops_sp.Clear();
+            txt_min_gpu_tflops_dp.Clear();
+            txt_min_ram.Clear();
+            txt_min_vram.Clear();
+            txt_ram_per_core.Clear();
 
+            txt_total_budget.Clear();
+            txt_monthly_power_budget.Clear();
+            txt_max_power_delivery.Clear();
+            txt_max_rack_power.Clear();
+            txt_max_racks.Clear();
+
+            txt_construction_cost.Clear();
+            txt_daily_load_hours.Clear();
+            txt_weekly_load_days.Clear();
+            cmb_average_load_percent.SelectedIndex = -1;
+            txt_electricity_cost.Clear();
+
+            txt_log.Clear();
+            txt_log.AppendText("Input Fields Cleared");
+        }
+
+        private void noResultToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txt_min_cpu_gflops.Text = "1024";
+            txt_min_gpu_tflops_sp.Text = "128";
+            txt_min_gpu_tflops_dp.Text = "64";
+            txt_min_ram.Text = "512";
+            txt_min_vram.Text = "256";
+            txt_ram_per_core.Text = "4";
+
+            txt_total_budget.Text = "100000";
+            txt_monthly_power_budget.Text = "2000";
+            txt_max_power_delivery.Text = "10000";
+            txt_max_rack_power.Text = "2000";
+            txt_max_racks.Text = "5";
+
+            txt_construction_cost.Text = "10";
+            txt_daily_load_hours.Text = "24";
+            txt_weekly_load_days.Text = "6";
+            cmb_average_load_percent.SelectedIndex = 0;
+            txt_electricity_cost.Text = "0.5";
+        }
+
+        private void resultToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txt_min_cpu_gflops.Text = "700000";
+            txt_min_gpu_tflops_sp.Text = "400";
+            txt_min_gpu_tflops_dp.Text = "150";
+            txt_min_ram.Text = "512";
+            txt_min_vram.Text = "512";
+            txt_ram_per_core.Text = "4";
+
+            txt_total_budget.Text = "500000";
+            txt_monthly_power_budget.Text = "4000";
+            txt_max_power_delivery.Text = "70000";
+            txt_max_rack_power.Text = "10000";
+            txt_max_racks.Text = "5";
+
+            txt_construction_cost.Text = "10";
+            txt_daily_load_hours.Text = "18";
+            txt_weekly_load_days.Text = "5";
+            cmb_average_load_percent.SelectedIndex = 3;
+            txt_electricity_cost.Text = "0.2";
+        }
+
+        private void lotsOfResultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txt_min_cpu_gflops.Text = "500000";
+            txt_min_gpu_tflops_sp.Text = "300";
+            txt_min_gpu_tflops_dp.Text = "100";
+            txt_min_ram.Text = "1024";
+            txt_min_vram.Text = "512";
+            txt_ram_per_core.Text = "2";
+
+            txt_total_budget.Text = "800000";
+            txt_monthly_power_budget.Text = "5000";
+            txt_max_power_delivery.Text = "80000";
+            txt_max_rack_power.Text = "10000";
+            txt_max_racks.Text = "10";
+
+            txt_construction_cost.Text = "10";
+            txt_daily_load_hours.Text = "18";
+            txt_weekly_load_days.Text = "6";
+            cmb_average_load_percent.SelectedIndex = 2;
+            txt_electricity_cost.Text = "0.2";
         }
 
     }

@@ -1,16 +1,16 @@
-﻿#componentName:componentCost:componentTDP:frequencyMhz:instructionsPerCycle:numOfCores
-Intel Core i3 4370:146:54:3800:16:2
-Intel Core i3 4150:120:35:3500:16:2
-Intel Core i5 4460:188:84:3200:16:4
-Intel Core i5 4690:222:84:3500:16:4
-Intel Core i7 4790:302:84:3600:16:8
-Intel Core i7 5960X:1045:140:3000:16:8
-Intel Xeon E5-2637 v2:1391:130:3500:8:8
-Intel Xeon E5-2690 v2:2669:130:3000:16:10
-AMD FX 8370:200:125:4000:8:8
-AMD FX 9370:210:220:4400:8:8
-AMD FX 9590:240:220:4700:8:8
-AMD Opteron 6344:410:115:2600:8:12
-AMD Opteron 6376:700:115:2300:8:16
-AMD Opteron 6380:1110:115:2500:8:16
+﻿#componentName:componentCost:componentTDP:frequencyMhz:instructionsPerCycle:numOfCores:Hyperthreaded(Y/N)
+Intel Core i3 4370:146:54:3800:16:2:N
+Intel Core i3 4150:120:35:3500:16:2:N
+Intel Core i5 4460:188:84:3200:16:4:N
+Intel Core i5 4690:222:84:3500:16:4:N
+Intel Core i7 4790:302:84:3600:16:8:Y
+Intel Core i7 5960X:1045:140:3000:16:8:Y
+Intel Xeon E5-2637 v2:1391:130:3500:8:8:Y
+Intel Xeon E5-2690 v2:2669:130:3000:16:10:Y
+AMD FX 8370:200:125:4000:8:8:N
+AMD FX 9370:210:220:4400:8:8:N
+AMD FX 9590:240:220:4700:8:8:N
+AMD Opteron 6344:410:115:2600:8:12:N
+AMD Opteron 6376:700:115:2300:8:16:N
+AMD Opteron 6380:1110:115:2500:8:16:N
 #
