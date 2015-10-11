@@ -1,7 +1,8 @@
 ﻿using System;
-
+using System.Xml.Serialization;
 namespace ClusterDesignTool
 {
+    [Serializable, XmlRoot("GPU"), XmlType("GPU")]
 	public class gpu : component
 	{
 		private Double vramGB;

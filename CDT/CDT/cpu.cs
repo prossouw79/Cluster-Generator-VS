@@ -1,7 +1,8 @@
 ﻿using System;
-
+using System.Xml.Serialization;
 namespace ClusterDesignTool
 {
+    [Serializable, XmlRoot("CPU"), XmlType("CPU")]
 	public class cpu : component
 	{
 		int frequencyMhz;

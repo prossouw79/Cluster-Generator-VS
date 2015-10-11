@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 namespace ClusterDesignTool
 {
+    [Serializable, XmlRoot("Rack"), XmlType("Rack")]
 	public class rack
 	{
 		List<node> nodes = new List<node>();

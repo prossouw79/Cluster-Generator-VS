@@ -12,6 +12,7 @@ using ClusterDesignTool;
 using System.Threading;
 using System.IO;
 using System.Reflection;
+using System.Xml.Serialization;
 
 namespace CDT
 {
@@ -22,6 +23,8 @@ namespace CDT
         List<mem> theMems = new List<mem>();
         List<gpu> theGPUS = new List<gpu>();
 
+        cluster bestCluster = null;
+        string bestClusterMsg = "";
 
         ConcurrentBag<rack> allPossibleRacks = new ConcurrentBag<rack>();
         ConcurrentBag<cluster> viableClusters = new ConcurrentBag<cluster>();
@@ -305,7 +308,6 @@ namespace CDT
 
         private void generateViableClusters()
         {
-            cluster bestCluster;
             doneGeneratingCluster = false;
             readyToGenerateClusters = false;
             int zeroResultCount = 0;
@@ -360,7 +362,8 @@ namespace CDT
                 if (viableClusters.Count == 1)
                 {
                     bestCluster = viableClusters.ElementAt(0);
-                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    bestClusterMsg = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    txt_log.Text = bestClusterMsg;              
                 }
                 else if (viableClusters.Count > 1)
                 {
@@ -428,16 +431,19 @@ namespace CDT
                     }
 
                     bestCluster = tmpList.ElementAt(0);
-                    txt_log.Text = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
-                    txt_log.Text += Environment.NewLine + Environment.NewLine + "Priorities:" +
+                    bestClusterMsg = bestCluster.getDetails() + Environment.NewLine + "TOTAL MONTHLY COST:\t\t" + string.Format("{0:0.00}", calculateMonthlyCost(bestCluster)) + "\t USD";
+                    bestClusterMsg += Environment.NewLine + Environment.NewLine + "Priorities:" +
                                                                          Environment.NewLine + "1st:\t" + getPriorityString(p1) + "\tFiltered out\t" + beforeFilter1 + "/"+ viableClusters.Count +
                                                                          Environment.NewLine + "2nd:\t" + getPriorityString(p2) + "\tFiltered out\t" + beforeFilter2 + "/" + viableClusters.Count +
                                                                          Environment.NewLine + "3rd:\t" + getPriorityString(p3) + "\tFiltered out\t" + beforeFilter3 + "/" + viableClusters.Count;
 
+                    txt_log.Text = bestClusterMsg;    
+
                 }
                 else
                 {
-                    txt_log.AppendText(Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.");
+                    bestClusterMsg = Environment.NewLine + Environment.NewLine + "No cluster configurations satisfy needs within constraints. Adjust either and try again.";
+                    txt_log.AppendText(bestClusterMsg);
                 }
                 readyToGenerateClusters = true;
 
@@ -1037,6 +1043,145 @@ namespace CDT
             txt_weekly_load_days.Text = "6";
             cmb_average_load_percent.SelectedIndex = 2;
             txt_electricity_cost.Text = "0.2";
+        }
+
+        private void setInput(List<string> inputList)
+        {
+            txt_min_cpu_gflops.Text = inputList.ElementAt(0);
+            txt_min_gpu_tflops_sp.Text = inputList.ElementAt(1);
+            txt_min_gpu_tflops_dp.Text = inputList.ElementAt(2);
+            txt_min_ram.Text = inputList.ElementAt(3);
+            txt_min_vram.Text = inputList.ElementAt(4);
+            txt_ram_per_core.Text = inputList.ElementAt(5);
+
+            txt_total_budget.Text = inputList.ElementAt(6);
+            txt_monthly_power_budget.Text = inputList.ElementAt(7);
+            txt_max_power_delivery.Text = inputList.ElementAt(8);
+            txt_max_rack_power.Text = inputList.ElementAt(9);
+            txt_max_racks.Text = inputList.ElementAt(10);
+
+            txt_construction_cost.Text = inputList.ElementAt(11);
+            txt_daily_load_hours.Text = inputList.ElementAt(12);
+            txt_weekly_load_days.Text = inputList.ElementAt(13);
+            cmb_average_load_percent.SelectedIndex =  Int16.Parse(inputList.ElementAt(14));
+            txt_electricity_cost.Text = inputList.ElementAt(15);
+        }
+
+        private List<string> getInput()
+        {
+            List<string> tmp = new List<string>();
+
+           
+            tmp.Add(txt_min_cpu_gflops.Text);
+            tmp.Add(txt_min_gpu_tflops_sp.Text);
+            tmp.Add(txt_min_gpu_tflops_dp.Text);
+            tmp.Add(txt_min_ram.Text);
+            tmp.Add(txt_min_vram.Text);
+            tmp.Add(txt_ram_per_core.Text);
+
+            tmp.Add(txt_total_budget.Text);
+            tmp.Add(txt_monthly_power_budget.Text);
+            tmp.Add(txt_max_power_delivery.Text);
+            tmp.Add(txt_max_rack_power.Text);
+            tmp.Add(txt_max_racks.Text);
+
+            tmp.Add(txt_construction_cost.Text);
+            tmp.Add(txt_daily_load_hours.Text);
+            tmp.Add(txt_weekly_load_days.Text);
+            tmp.Add(cmb_average_load_percent.SelectedIndex.ToString());
+            tmp.Add(txt_electricity_cost.Text);
+
+            return tmp;
+        }
+
+
+
+
+        private void saveOutputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bestCluster != null)
+            {
+                Configuration con = new Configuration();
+                con.setValuesAndRecommendation(getInput(),bestClusterMsg);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(Configuration));
+
+                string path = "";
+                SaveFileDialog x = new SaveFileDialog();
+                x.Filter = "XML Files (*.xml)|*.xml";
+                if (x.ShowDialog() == DialogResult.OK)
+                {
+                    path = x.FileName;
+                }
+
+                TextWriter writer = new StreamWriter(path);
+                serializer.Serialize(writer, con);
+                writer.Close();
+                MessageBox.Show("File saved.");
+            }
+            else
+            {
+                MessageBox.Show("Since no cluster was generated, only input values will be saved.");
+
+                Configuration con = new Configuration();
+                con.setValues(getInput());
+
+                XmlSerializer serializer = new XmlSerializer(typeof(Configuration));
+
+                string path = "";
+                SaveFileDialog x = new SaveFileDialog();
+                x.Filter = "XML Files (*.xml)|*.xml";
+                if (x.ShowDialog() == DialogResult.OK)
+                {
+                    path = x.FileName;
+                }
+
+                TextWriter writer = new StreamWriter(path);
+                serializer.Serialize(writer, con);
+                writer.Close();
+                MessageBox.Show("File saved.");
+            }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = "";
+
+            OpenFileDialog x = new OpenFileDialog();
+            x.Filter = "XML Files (*.xml)|*.xml";
+            if (x.ShowDialog() == DialogResult.OK)
+            {
+                path = x.FileName;
+            }
+
+            // Create a new file stream for reading the XML file
+            FileStream ReadFileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(Configuration));
+
+
+            // Load the object saved above by using the Deserialize function
+            Configuration LoadedObj = (Configuration)serializer.Deserialize(ReadFileStream);
+
+            setInput(LoadedObj.getValues());
+            bestClusterMsg = LoadedObj.getRecommendation();
+
+            txt_log.Text = bestClusterMsg;
+            
+            if(bestClusterMsg.Length < 5)
+            {
+                txt_log.AppendText("Input values loaded from file. Proceed to generation.");
+                MessageBox.Show("Project Loaded without recommendation.");
+            }
+            else
+            {
+                MessageBox.Show("Project Loaded with recommendation.");
+            }
+
+
+            // Cleanup
+            ReadFileStream.Close();
+
         }
 
     }

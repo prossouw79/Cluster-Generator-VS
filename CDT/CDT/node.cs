@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 namespace ClusterDesignTool
 {
+    [Serializable, XmlRoot("Node"), XmlType("Node")]
 	public class node
 	{
 		int numOfCPUS;

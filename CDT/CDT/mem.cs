@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace ClusterDesignTool
 {
+    [Serializable, XmlRoot("MEM"), XmlType("MEM")]
 	public class mem : component
 	{
 		private int capacityGB;
