@@ -879,7 +879,7 @@ namespace CDT
 
 
                 InputBox.SetLanguage(InputBox.Language.English);
-                DialogResult res3 = InputBox.ShowDialog("Please third primary goal", "Select Goal:",
+                DialogResult res3 = InputBox.ShowDialog("Please third goal", "Select Goal:",
                     InputBox.Icon.Question, //Set icon type (default info)
                     InputBox.Buttons.OkCancel, //Set buttons (default ok)
                     InputBox.Type.ComboBox, //Set type (default nothing)

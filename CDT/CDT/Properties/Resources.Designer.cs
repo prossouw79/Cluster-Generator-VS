@@ -99,16 +99,6 @@ namespace CDT.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap havard_bjerke_8372550635 {
-            get {
-                object obj = ResourceManager.GetObject("havard_bjerke_8372550635", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to #componentName:componentCost:componentTDP:capacityGB:frequencyMhz
         ///Kingston DDR3 Unbuffered SM:57:4:8:1600
         ///Kingston DDR3 Unbuffered SM:116:5:16:1600
